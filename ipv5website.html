@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/html">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fruit Collector Audio Game</title>
+    <link rel="stylesheet" href="styles.css">
+    <!-- Google Fonts for Modern Typography -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+
+    <style>
+        /* Reset and Base Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            line-height: 1.6;
+            background-color: #ffffff;
+            color: #333333;
+        }
+
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        /* Container */
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: auto;
+            padding: 40px 0;
+        }
+
+        /* Navigation Bar */
+        header {
+            position: fixed;
+            top: 0; /* Ensure header stays at the very top */
+            width: 100%;
+            background-color: #2c3e50;
+            z-index: 1000;
+        }
+
+        nav .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo a {
+            color: #ecf0f1;
+            font-size: 24px;
+            font-weight: 700;
+        }
+
+        .nav-links {
+            list-style: none;
+            display: flex;
+        }
+
+        .nav-links li {
+            margin-left: 20px;
+        }
+
+        .nav-links a {
+            color: #ecf0f1;
+            font-size: 16px;
+            transition: color 0.3s ease;
+        }
+
+        .nav-links a:hover {
+            color: #bdc3c7;
+        }
+
+        /* Mobile Menu */
+        .menu-toggle {
+            display: none;
+            flex-direction: column;
+            cursor: pointer;
+        }
+
+        .menu-toggle .bar {
+            height: 3px;
+            width: 25px;
+            background-color: #ecf0f1;
+            margin: 4px 0;
+            transition: all 0.3s ease;
+        }
+
+        @media (max-width: 768px) {
+            .nav-links {
+                position: absolute;
+                right: 0;
+                height: 100vh;
+                top: 60px;
+                background-color: #2c3e50;
+                flex-direction: column;
+                width: 50%;
+                align-items: center;
+                transform: translateX(100%);
+                transition: transform 0.3s ease-in;
+            }
+
+            .nav-links.active {
+                transform: translateX(0);
+            }
+
+            .nav-links li {
+                margin: 20px 0;
+            }
+
+            .menu-toggle {
+                display: flex;
+            }
+
+            .menu-toggle.toggle .bar:nth-child(2) {
+                opacity: 0;
+            }
+
+            .menu-toggle.toggle .bar:nth-child(1) {
+                transform: translateY(7px) rotate(45deg);
+            }
+
+            .menu-toggle.toggle .bar:nth-child(3) {
+                transform: translateY(-7px) rotate(-45deg);
+            }
+        }
+
+        /* Hero Section */
+        .hero {
+            background: url('assets/hero-placeholder.jpg') no-repeat center center/cover;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            margin-top: 60px; /* Height of navbar */
+        }
+
+        .hero-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(44, 62, 80, 0.6);
+        }
+
+        .hero-content {
+            position: relative;
+            text-align: center;
+            color: #ecf0f1;
+            max-width: 800px;
+            padding: 0 20px;
+        }
+
+        .hero-content h1 {
+            font-size: 48px;
+            margin-bottom: 20px;
+        }
+
+        .hero-content p {
+            font-size: 20px;
+            margin-bottom: 30px;
+        }
+
+        .hero-content .btn {
+            padding: 15px 30px;
+            background-color: #e74c3c;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            font-size: 18px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .hero-content .btn:hover {
+            background-color: #c0392b;
+        }
+
+        /* Sections */
+        .section {
+            padding: 60px 0;
+        }
+
+        .section.bg-light {
+            background-color: #f9f9f9;
+        }
+
+        /* Headings */
+        h2 {
+            font-size: 32px;
+            color: #2c3e50;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        /* Paragraphs */
+        p {
+            font-size: 18px;
+            margin-bottom: 15px;
+            text-align: justify;
+        }
+
+        /* Lists */
+        .features, .requirements {
+            list-style: disc inside;
+            margin-bottom: 20px;
+        }
+
+        .setup-steps {
+            list-style: decimal inside;
+            margin-bottom: 20px;
+        }
+
+        .setup-steps li {
+            margin-bottom: 10px;
+        }
+
+        /* Features List */
+        .features li, .requirements ul li {
+            margin-bottom: 10px;
+        }
+
+        /* (Removed multi-step gameplay) */
+        .single-gameplay-img {
+            display: block;
+            max-width: 500px;
+            margin: 20px auto;
+        }
+
+        /* Technologies Section (no images) */
+        .tech-description {
+            margin-top: 20px;
+        }
+
+        /* Gallery Section */
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        .gallery-item img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 10px;
+            transition: transform 0.3s ease;
+        }
+
+        .gallery-item img:hover {
+            transform: scale(1.05);
+        }
+
+        /* Contact Section */
+        .contact-form {
+            background-color: #ffffff;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            max-width: 600px;
+            margin: auto;
+        }
+
+        .contact-form input,
+        .contact-form textarea {
+            width: 100%;
+            padding: 15px;
+            margin-bottom: 20px;
+            border: 1px solid #bdc3c7;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+
+        .contact-form button {
+            padding: 15px 30px;
+            background-color: #2ecc71;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            font-size: 18px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .contact-form button:hover {
+            background-color: #27ae60;
+        }
+
+        /* Footer */
+        footer {
+            background-color: #2c3e50;
+            color: #ecf0f1;
+            text-align: center;
+            padding: 20px 0;
+        }
+
+        footer p {
+            font-size: 16px;
+        }
+
+        /* Smooth Scroll Behavior */
+        html {
+            scroll-behavior: smooth;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <nav>
+        <div class="container">
+            <div class="logo">
+                <a href="#hero">Interactive Visualization of Singing</a>
+            </div>
+            <ul class="nav-links">
+                <li><a href="#overview">Overview</a></li>
+                <li><a href="#gameplay">Gameplay</a></li>
+                <li><a href="#technologies">Technologies</a></li>
+                <li><a href="#gallery">Gallery</a></li>
+            </ul>
+            <div class="menu-toggle" id="mobile-menu">
+                <span class="bar"></span>
+                <span class="bar"></span>
+                <span class="bar"></span>
+            </div>
+        </div>
+    </nav>
+</header>
+
+<section id="hero" class="hero">
+    <div class="hero-overlay"></div>
+    <div class="hero-content">
+        <h1>Interactive Visualization of Singing</h1>
+        <p>Experience the thrill of collecting fruits using only your voice!</p>
+    </div>
+</section>
+
+<section id="overview" class="section">
+    <div class="container">
+        <h2>Overview</h2>
+        <p>
+            Our project is an innovative four-player audio-controlled game where each player uses their voice's pitch and volume to navigate and collect fruits moving across the screen. Combining real-time audio processing with engaging gameplay, the game offers a unique multiplayer experience that challenges your vocal control and coordination.
+        </p>
+        <ul class="features">
+            <li>Real-time audio pitch and volume detection.</li>
+            <li>Multiplayer support for up to four players.</li>
+            <li>Visually appealing and responsive game environment.</li>
+            <li>Easy setup and user-friendly controls.</li>
+        </ul>
+    </div>
+</section>
+
+<!-- Gameplay Section (Single Text and Single Image) -->
+<section id="gameplay" class="section">
+    <div class="container">
+        <h2>Gameplay</h2>
+        <p>
+            In our Fruit Collector Audio Game, you control the movement of your character entirely by your voice.
+            Louder volume propels your character upward, while softer volume gently lowers it. Additionally,
+            changing your pitch will move you from left to right. Mastering the combination of pitch and volume
+            is key to maneuvering your character around the screen, dodging obstacles, and collecting as many
+            fruits as possible within the time limit. The more fruits you snag, the higher your final score!
+        </p>
+        <img class="single-gameplay-img" src="assets/playthrough_one.png" alt="Gameplay Illustration">
+    </div>
+</section>
+
+<!-- Technologies Section (No images) -->
+<section id="technologies" class="section bg-light">
+    <div class="container">
+        <h2>Technologies</h2>
+        <div class="tech-description">
+            <p>
+                Our project leverages powerful technologies to deliver a seamless and engaging gaming experience.
+                Python serves as the backbone, while Pygame handles the game development aspects.
+                PyAudio facilitates real-time audio processing to capture pitch and volume variations on the fly.
+                Through these robust and well-supported libraries, we’ve built a unique game that merges
+                vocal control with interactive visuals.
+            </p>
+        </div>
+    </div>
+</section>
+
+<!-- Gallery Section -->
+<section id="gallery" class="section">
+    <div class="container">
+        <h2>Gallery</h2>
+        <div class="gallery-grid">
+            <div class="gallery-item">
+                <img src="assets/gallery_one.png" alt="Gameplay Screenshot 1">
+            </div>
+            <div class="gallery-item">
+                <img src="assets/gallery_four.png" alt="Gameplay Screenshot 2">
+            </div>
+            <div class="gallery-item">
+                <img src="assets/gallery_three.png" alt="Gameplay Screenshot 3">
+            </div>
+            <div class="gallery-item">
+                <img src="assets/gallery_two.png" alt="Gameplay Screenshot 4">
+            </div>
+            <!-- Add more gallery items as needed -->
+        </div>
+    </div>
+</section>
+
+<!-- Footer -->
+<footer>
+    <div class="container">
+    </div>
+</footer>
+
+<!-- JavaScript for Mobile Menu Toggle -->
+<script>
+    const menuToggle = document.getElementById('mobile-menu');
+    const navLinks = document.querySelector('.nav-links');
+
+    menuToggle.addEventListener('click', () => {
+        navLinks.classList.toggle('active');
+        menuToggle.classList.toggle('toggle');
+    });
+</script>
+
+</body>
+</html>
